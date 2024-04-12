@@ -63,6 +63,7 @@ dependencies {
     // Coil Image Dependency
     implementation(libs.coil.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

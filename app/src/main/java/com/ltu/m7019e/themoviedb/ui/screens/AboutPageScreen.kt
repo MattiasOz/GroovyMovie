@@ -1,5 +1,143 @@
 package com.ltu.m7019e.themoviedb.ui.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Matrix
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.graphics.shapes.CornerRounding
+import androidx.graphics.shapes.RoundedPolygon
+import androidx.graphics.shapes.toPath
+import com.ltu.m7019e.themoviedb.R
+import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
+import kotlin.math.max
+
+
+@Composable
+fun AboutPageScreen(
+    modifier: Modifier = Modifier
+) {
+    val matzuu = painterResource(id = R.drawable.mattias_profile_picture)
+    val stigmund = painterResource(id = R.drawable.simon_profile_picture)
+    Column (
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxHeight()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ContributorCard(
+                painterResource = matzuu,
+                modifier = Modifier.weight(1f),
+                name = stringResource(R.string.mattias_name)
+            )
+            ContributorCard(
+                painterResource = stigmund,
+                modifier = Modifier.weight(1f),
+                name = stringResource(R.string.simon_name)
+            )
+        }
+
+        // TODO: add github link && styling
+    }
+}
+
+@Composable
+fun ContributorCard(
+    painterResource: Painter,
+    name: String,
+    contentDesc: String? = null,
+    modifier: Modifier = Modifier
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(8.dp)
+    ) {
+        val polygon = remember {
+            RoundedPolygon(
+                6,
+                rounding = CornerRounding(1f),
+            )
+        }
+        val clip = remember(polygon) {
+            RoundedPolygonShape(polygon = polygon)
+        }
+        Box (
+            modifier = Modifier
+                .clip(clip)
+        ) {
+            Image(
+                painter = painterResource,
+                contentDescription = contentDesc,
+                modifier = Modifier
+                    .align(Alignment.Center)
+            )
+        }
+        Text(
+            text = name,
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
+    }
+}
 
 
 
+// copied from https://developer.android.com/develop/ui/compose/graphics/draw/shapes
+class RoundedPolygonShape(
+    private val polygon: RoundedPolygon,
+    private var matrix: Matrix = Matrix()
+) : Shape {
+    private fun RoundedPolygon.getBounds() = calculateBounds().let { Rect(it[0], it[1], it[2], it[3]) }
+
+    private var path = Path()
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        path.rewind()
+        path = polygon.toPath().asComposePath()
+        matrix.reset()
+        val bounds = polygon.getBounds()
+        val maxDimension = max(bounds.width, bounds.height)
+        matrix.scale(size.width / maxDimension, size.height / maxDimension)
+        matrix.translate(-bounds.left, -bounds.top)
+
+        path.transform(matrix)
+        return Outline.Generic(path)
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun AboutPageScreenPreview(){
+    TheMovieDBTheme {
+        AboutPageScreen()
+    }
+}

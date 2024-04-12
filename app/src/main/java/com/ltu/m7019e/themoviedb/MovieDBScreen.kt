@@ -1,11 +1,11 @@
 package com.ltu.m7019e.themoviedb
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -30,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ltu.m7019e.themoviedb.database.Movies
 import com.ltu.m7019e.themoviedb.model.Movie
+import com.ltu.m7019e.themoviedb.ui.screens.AboutPageScreen
 import com.ltu.m7019e.themoviedb.ui.screens.MovieDetailScreen
 import com.ltu.m7019e.themoviedb.ui.screens.MovieListItemCard
 import com.ltu.m7019e.themoviedb.ui.screens.MovieListScreen
@@ -39,7 +39,8 @@ import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel
 
 enum class MovieDBScreen(@StringRes val title: Int){
     List(title = R.string.app_name),
-    Detail(title = R.string.movie_details)
+    Detail(title = R.string.movie_details),
+    About(title = R.string.about_page)
 }
 
 
@@ -49,6 +50,7 @@ fun MovieDBAppBar(
     currentScreen: MovieDBScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
+    navigateAbout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -63,6 +65,13 @@ fun MovieDBAppBar(
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back_button)
+                    )
+                }
+            } else {
+                IconButton(onClick = navigateAbout) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = stringResource(R.string.about_button)
                     )
                 }
             }
@@ -88,7 +97,8 @@ fun TheMovieDBApp(
             MovieDBAppBar(
                 currentScreen = currentScreen,
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() }
+                navigateUp = { navController.navigateUp() },
+                navigateAbout = { navController.navigate(MovieDBScreen.About.name) }
             )
         },
         modifier = modifier
@@ -120,6 +130,9 @@ fun TheMovieDBApp(
                         modifier = Modifier
                     )
                 }
+            }
+            composable(route = MovieDBScreen.About.name){
+                AboutPageScreen()
             }
         }
     }
