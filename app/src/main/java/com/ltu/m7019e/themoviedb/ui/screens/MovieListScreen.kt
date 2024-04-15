@@ -15,6 +15,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
@@ -76,10 +78,16 @@ fun MovieListItemCard(
                 Spacer(
                     modifier = Modifier.size(8.dp)
                 )
-                Text(
-                    text = movie.releaseDate,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Row {
+                    Text(
+                        text = movie.releaseDate,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(
+                        modifier = Modifier.size(8.dp)
+                    )
+                    Genres(movie = movie) // <----
+                }
                 Spacer(
                     modifier = Modifier.size(8.dp)
                 )
@@ -97,7 +105,21 @@ fun MovieListItemCard(
     }
 }
 
+@Composable
+fun Genres(movie: Movie, modifier: Modifier = Modifier) {
+    var str = ""
+    for (g in movie.genres) {
+        str = str + g + if (g != movie.genres.last())", " else " " // make last not have comma
+    }
+    Text(
+        text = str,
+        style = MaterialTheme.typography.bodySmall,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun MovieDetailPreview() {
@@ -113,4 +135,4 @@ fun MovieDetailPreview() {
             ), {}
         )
     }
-}
+}*/

@@ -139,7 +139,7 @@ fun TheMovieDBApp(
 }
 
 
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
@@ -155,4 +155,4 @@ fun MovieItemPreview() {
             ), {}
         )
     }
-}
+}*/
