@@ -35,7 +35,12 @@ fun MovieDetailScreen(
     modifier: Modifier = Modifier
 ){
     val ctx = LocalContext.current
-    val intent = remember {Intent(Intent.ACTION_VIEW, Uri.parse(Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + movie.backdropPath))}
+    val intent = remember {
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + movie.backdropPath)
+        )
+    }
     Column(
         modifier = modifier
     ) {

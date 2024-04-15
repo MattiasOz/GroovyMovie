@@ -6,4 +6,5 @@
     <string name="about_button">About</string>
     <string name="mattias_name">Mattias Öz</string>
     <string name="simon_name">Simon Engström</string>
+    <string name="github_repo">https://github.com/MattiasOz/GroovyMovie</string>
 </resources>

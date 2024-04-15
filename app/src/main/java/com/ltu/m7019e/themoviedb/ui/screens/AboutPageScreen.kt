@@ -1,11 +1,16 @@
 package com.ltu.m7019e.themoviedb.ui.screens
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,6 +27,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.R
 import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 import kotlin.math.max
@@ -43,16 +51,24 @@ fun AboutPageScreen(
 ) {
     val matzuu = painterResource(id = R.drawable.mattias_profile_picture)
     val stigmund = painterResource(id = R.drawable.simon_profile_picture)
+    val ctx = LocalContext.current
+    val intent = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse(stringResource(R.string.github_repo))
+    )
     Column (
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxHeight()
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .weight(4f),
         ) {
             ContributorCard(
                 painterResource = matzuu,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 name = stringResource(R.string.mattias_name)
             )
             ContributorCard(
@@ -62,7 +78,46 @@ fun AboutPageScreen(
             )
         }
 
-        // TODO: add github link && styling
+        SocialLinksCard(
+            ctx = ctx,
+            intent = intent,
+            modifier = Modifier.weight(1F)
+        )
+    }
+}
+
+@Composable
+fun SocialLinksCard(
+    ctx: Context,
+    intent: Intent,
+    modifier: Modifier = Modifier
+) {
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Column (
+            modifier = Modifier
+                .clickable { ctx.startActivity(intent) }
+        ) {
+            Box (modifier = Modifier.weight(1f)) {
+                AsyncImage(
+                    model = R.drawable.github_icon,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    alignment = Alignment.Center
+                )
+            }
+            Text(
+                text = "Github",
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterHorizontally),
+            )
+        }
     }
 }
 
@@ -75,6 +130,7 @@ fun ContributorCard(
 ) {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .padding(8.dp)
     ) {
