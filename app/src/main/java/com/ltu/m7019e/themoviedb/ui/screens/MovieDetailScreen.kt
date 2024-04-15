@@ -6,11 +6,14 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,10 +65,16 @@ fun MovieDetailScreen(
         Spacer(
             modifier = Modifier.size(8.dp)
         )
-        Text(
-            text = movie.releaseDate,
-            style = MaterialTheme.typography.bodySmall
-        )
+        Row {
+            Text(
+                text = movie.releaseDate,
+                style = MaterialTheme.typography.bodySmall
+            )
+            Spacer(
+                modifier = Modifier.size(8.dp)
+            )
+            GenresScrollable(movie = movie)
+        }
         Spacer(
             modifier = Modifier.size(8.dp)
         )
@@ -77,6 +86,16 @@ fun MovieDetailScreen(
         Spacer(
             modifier = Modifier.size(8.dp)
         )
+    }
+}
+
+@Composable
+fun GenresScrollable(movie: Movie) {
+    LazyRow {
+        items(movie.genres) { genre ->
+            Text(text = genre + if (genre != movie.genres.last())", " else " ",
+            style = MaterialTheme.typography.bodySmall
+            )}
     }
 }
 
