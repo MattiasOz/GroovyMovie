@@ -77,14 +77,7 @@ fun MovieDBAppBar(
                         contentDescription = stringResource(R.string.back_button)
                     )
                 }
-            }/* else {
-                IconButton(onClick = navigateAbout) {
-                    Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = stringResource(R.string.about_button)
-                    )
-                }
-            }*/
+            }
         }
     )
 }
