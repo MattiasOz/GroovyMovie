@@ -59,6 +59,16 @@ fun MovieDBAppBar(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         modifier = modifier,
+        actions = {
+            if(currentScreen != MovieDBScreen.About) {
+                IconButton(onClick = {navigateAbout()}) {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = stringResource(R.string.about_button)
+                    )
+                }
+            }
+        },
         navigationIcon = {
             if (canNavigateBack){
                 IconButton(onClick = navigateUp) {
@@ -67,14 +77,14 @@ fun MovieDBAppBar(
                         contentDescription = stringResource(R.string.back_button)
                     )
                 }
-            } else {
+            }/* else {
                 IconButton(onClick = navigateAbout) {
                     Icon(
                         imageVector = Icons.Filled.Info,
                         contentDescription = stringResource(R.string.about_button)
                     )
                 }
-            }
+            }*/
         }
     )
 }
