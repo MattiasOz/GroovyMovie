@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -20,12 +21,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 import com.ltu.m7019e.themoviedb.utils.Constants
+import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 import com.ltu.m7019e.themoviedb.viewmodel.SelectedMovieUiState
 
 
 @Composable
 fun MovieDetailScreen(
     selectedMovieUiState: SelectedMovieUiState,
+    genreMap: Map<Long, String>,
     modifier: Modifier = Modifier
 ){
 
@@ -38,6 +41,7 @@ fun MovieDetailScreen(
                     Uri.parse(Constants.BACKDROP_IMAGE_BASE_URL + Constants.BACKDROP_IMAGE_WIDTH + selectedMovieUiState.movie.backdropPath)
                 )
             }
+            val genreList = getGenresFromIDs(selectedMovieUiState.movie.genreIDs, genreMap)
             Column(
                 modifier = modifier
             ) {
@@ -59,10 +63,16 @@ fun MovieDetailScreen(
                 Spacer(
                     modifier = Modifier.size(8.dp)
                 )
-                Text(
-                    text = selectedMovieUiState.movie.releaseDate,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Row {
+                    Text(
+                        text = selectedMovieUiState.movie.releaseDate,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(
+                        modifier = Modifier.size(8.dp)
+                    )
+                    Genres(genreList, maxLines = Int.MAX_VALUE)
+                }
                 Spacer(
                     modifier = Modifier.size(8.dp)
                 )

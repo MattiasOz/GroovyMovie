@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ltu.m7019e.themoviedb.ui.screens.AboutPageScreen
 import com.ltu.m7019e.themoviedb.ui.screens.MovieDetailScreen
 import com.ltu.m7019e.themoviedb.ui.screens.MovieListScreen
+import com.ltu.m7019e.themoviedb.utils.getGenreMap
 import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel
 
 
@@ -98,6 +99,7 @@ fun TheMovieDBApp(
         modifier = modifier
     ) { innerPadding ->
         val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
+        val genreMap = getGenreMap(movieDBViewModel.genreListUiState)
 
         NavHost(
             navController = navController,
@@ -109,7 +111,7 @@ fun TheMovieDBApp(
             composable(route = MovieDBScreen.List.name) {
                 MovieListScreen(
                     movieListUiState = movieDBViewModel.movieListUiState,
-                    genreListUiState = movieDBViewModel.genreListUiState,
+                    genreMap = genreMap,
                     onMovieListItemClicked = { movie ->
                         movieDBViewModel.setSelectedMovie(movie)
                         navController.navigate(MovieDBScreen.Detail.name)
@@ -122,6 +124,7 @@ fun TheMovieDBApp(
             composable(route = MovieDBScreen.Detail.name) {
                     MovieDetailScreen(
                         selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                        genreMap = genreMap,
                         modifier = Modifier
                     )
             }

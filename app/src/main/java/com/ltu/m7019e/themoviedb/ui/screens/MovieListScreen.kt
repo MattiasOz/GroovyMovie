@@ -31,11 +31,11 @@ import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 @Composable
 fun MovieListScreen(
     movieListUiState: MovieListUiState,
-    genreListUiState: GenreListUiState,
+    genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ){
-    val genreMap = getGenreMap(genreListUiState)
+
     LazyColumn(modifier = modifier) {
         when(movieListUiState) {
             is MovieListUiState.Success -> {
@@ -133,23 +133,7 @@ fun MovieListItemCard(
     }
 }
 
-@Composable
-fun Genres(
-    genreList: List<String>,
-    modifier: Modifier = Modifier
-) {
-    var genreText = ""
-    for (genre in genreList) {
-        genreText = genreText + genre + if (genre != genreList.last())", " else " " // make last not have comma
-    }
-    Text(
-        text = genreText,
-        style = MaterialTheme.typography.bodySmall,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        modifier = modifier
-    )
-}
+
 
 /*
 @Preview(showBackground = true)
