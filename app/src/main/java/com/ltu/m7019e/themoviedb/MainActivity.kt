@@ -6,11 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.ltu.m7019e.themoviedb.model.Movie
-import com.ltu.m7019e.themoviedb.ui.screens.MovieListItemCard
 import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 
 class MainActivity : ComponentActivity() {

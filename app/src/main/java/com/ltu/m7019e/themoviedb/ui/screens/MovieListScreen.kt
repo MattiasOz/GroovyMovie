@@ -1,6 +1,5 @@
 package com.ltu.m7019e.themoviedb.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +22,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.model.Movie
 import com.ltu.m7019e.themoviedb.utils.Constants
-import com.ltu.m7019e.themoviedb.utils.getGenreMap
-import com.ltu.m7019e.themoviedb.viewmodel.GenreListUiState
 import com.ltu.m7019e.themoviedb.viewmodel.MovieListUiState
 import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 
@@ -133,7 +130,24 @@ fun MovieListItemCard(
     }
 }
 
-
+@Composable
+fun Genres(
+    genreList: List<String>,
+    maxLines: Int = 1,
+    modifier: Modifier = Modifier
+) {
+    var genreText = ""
+    for (genre in genreList) {
+        genreText = genreText + genre + if (genre != genreList.last())", " else " " // make last not have comma
+    }
+    Text(
+        text = genreText,
+        style = MaterialTheme.typography.bodySmall,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier
+    )
+}
 
 /*
 @Preview(showBackground = true)

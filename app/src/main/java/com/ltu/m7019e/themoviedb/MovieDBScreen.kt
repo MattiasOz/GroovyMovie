@@ -80,7 +80,6 @@ fun MovieDBAppBar(
 
 @Composable
 fun TheMovieDBApp(
-    //viewModel: MovieDBViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
@@ -121,7 +120,7 @@ fun TheMovieDBApp(
                     },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(16.dp)
+                        .padding(8.dp)
                 )
             }
             composable(route = MovieDBScreen.Detail.name) {

@@ -19,7 +19,7 @@ fun getGenreMap(genreListUiState: GenreListUiState): MutableMap<Long, String> {
 }
 
 fun getGenresFromIDs(ids: List<Int>, genreMap: Map<Long, String>): MutableList<String> {
-    var res = mutableListOf<String>()
+    val res = mutableListOf<String>()
     for (id in ids) {
         genreMap[id.toLong()]?.let { res.add(it) }
     }

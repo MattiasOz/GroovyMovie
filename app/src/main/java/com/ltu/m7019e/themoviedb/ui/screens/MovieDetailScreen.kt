@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -19,10 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 import com.ltu.m7019e.themoviedb.utils.Constants
 import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 import com.ltu.m7019e.themoviedb.viewmodel.SelectedMovieUiState
@@ -59,34 +57,42 @@ fun MovieDetailScreen(
                     )
                 }
 
-                Text(
-                    text = selectedMovieUiState.movie.title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Spacer(
-                    modifier = Modifier.size(8.dp)
-                )
-                Row {
+                Column(
+
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
                     Text(
-                        text = selectedMovieUiState.movie.releaseDate,
-                        style = MaterialTheme.typography.bodySmall
+                        text = selectedMovieUiState.movie.title,
+                        style = MaterialTheme.typography.headlineSmall
                     )
                     Spacer(
                         modifier = Modifier.size(8.dp)
                     )
-                    Genres(genreList, maxLines = Int.MAX_VALUE)
+                    Row {
+                        Text(
+                            text = selectedMovieUiState.movie.releaseDate,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Spacer(
+                            modifier = Modifier.size(8.dp)
+                        )
+                        //Genres(genreList, maxLines = Int.MAX_VALUE)
+                        GenresScrollable(genreList)
+                    }
+                    Spacer(
+                        modifier = Modifier.size(8.dp)
+                    )
+                    Text(
+                        text = selectedMovieUiState.movie.overview,
+                        style = MaterialTheme.typography.bodySmall,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(
+                        modifier = Modifier.size(8.dp)
+                    )
                 }
-                Spacer(
-                    modifier = Modifier.size(8.dp)
-                )
-                Text(
-                    text = selectedMovieUiState.movie.overview,
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(
-                    modifier = Modifier.size(8.dp)
-                )
+
             }
 
         }
@@ -97,15 +103,17 @@ fun MovieDetailScreen(
 }
 
 @Composable
-fun GenresScrollable(movie: Movie) {
+fun GenresScrollable(genreList: List<String>) {
     LazyRow {
-        items(movie.genres) { genre ->
-            Text(text = genre + if (genre != movie.genres.last())", " else " ",
+        items(genreList) { genre ->
+            Text(text = genre + if (genre != genreList.last())", " else " ",
             style = MaterialTheme.typography.bodySmall
-            )}
+            )
+        }
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun MovieItemPreview() {
@@ -115,3 +123,4 @@ fun MovieItemPreview() {
         )
     }
 }
+ */

@@ -1,7 +1,6 @@
 package com.ltu.m7019e.themoviedb.database
 
 import com.ltu.m7019e.themoviedb.model.GenreResponse
-import com.ltu.m7019e.themoviedb.model.MovieResponse
 import com.ltu.m7019e.themoviedb.network.MovieDBApiService
 
 interface GenreRepository {
