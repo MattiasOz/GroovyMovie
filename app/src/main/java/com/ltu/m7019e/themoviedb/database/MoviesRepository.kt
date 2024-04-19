@@ -20,4 +20,5 @@ class NetworkMoviesRepository(
     override suspend fun getTopRatedMovies(): MovieResponse {
         return apiService.getTopRatedMovies()
     }
+
 }

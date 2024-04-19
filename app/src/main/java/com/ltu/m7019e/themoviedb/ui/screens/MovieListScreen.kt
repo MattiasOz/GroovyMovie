@@ -1,5 +1,6 @@
 package com.ltu.m7019e.themoviedb.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,35 +16,38 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.model.Movie
-import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 import com.ltu.m7019e.themoviedb.utils.Constants
+import com.ltu.m7019e.themoviedb.utils.getGenreMap
+import com.ltu.m7019e.themoviedb.viewmodel.GenreListUiState
 import com.ltu.m7019e.themoviedb.viewmodel.MovieListUiState
+import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 
 @Composable
 fun MovieListScreen(
     movieListUiState: MovieListUiState,
+    genreListUiState: GenreListUiState,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ){
+    val genreMap = getGenreMap(genreListUiState)
     LazyColumn(modifier = modifier) {
         when(movieListUiState) {
             is MovieListUiState.Success -> {
-            items(movieListUiState.movieList) {movie ->
-                MovieListItemCard(
-                    movie = movie,
-                    onMovieListItemClicked = onMovieListItemClicked,
-                    modifier = Modifier.padding(8.dp)//.background(Color(0xffffffff))
-                )
-            }
+                items(movieListUiState.movieList) {movie ->
+                    val genreList = getGenresFromIDs(movie.genreIDs, genreMap)
+                    MovieListItemCard(
+                        movie = movie,
+                        genreList = genreList,
+                        onMovieListItemClicked = onMovieListItemClicked,
+                        modifier = Modifier.padding(8.dp)//.background(Color(0xffffffff))
+                    )
+                }
             }
             is MovieListUiState.Loading -> {
                 item {
@@ -71,6 +75,7 @@ fun MovieListScreen(
 @Composable
 fun MovieListItemCard(
     movie: Movie,
+    genreList: List<String>,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -109,7 +114,7 @@ fun MovieListItemCard(
                     Spacer(
                         modifier = Modifier.size(8.dp)
                     )
-                    Genres(movie = movie) // <----
+                    Genres(genreList) // <----
                 }
                 Spacer(
                     modifier = Modifier.size(8.dp)
@@ -129,18 +134,20 @@ fun MovieListItemCard(
 }
 
 @Composable
-fun Genres(movie: Movie, modifier: Modifier = Modifier) {
-    /*
-    var str = ""
-    for (g in movie.genres) {
-        str = str + g + if (g != movie.genres.last())", " else " " // make last not have comma TODO: fix this to not IDs
+fun Genres(
+    genreList: List<String>,
+    modifier: Modifier = Modifier
+) {
+    var genreText = ""
+    for (genre in genreList) {
+        genreText = genreText + genre + if (genre != genreList.last())", " else " " // make last not have comma
     }
-     */
     Text(
-        text = "fix genre",
+        text = genreText,
         style = MaterialTheme.typography.bodySmall,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        modifier = modifier
     )
 }
 

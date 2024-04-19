@@ -109,6 +109,7 @@ fun TheMovieDBApp(
             composable(route = MovieDBScreen.List.name) {
                 MovieListScreen(
                     movieListUiState = movieDBViewModel.movieListUiState,
+                    genreListUiState = movieDBViewModel.genreListUiState,
                     onMovieListItemClicked = { movie ->
                         movieDBViewModel.setSelectedMovie(movie)
                         navController.navigate(MovieDBScreen.Detail.name)

@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 
 interface AppContainer {
     val moviesRepository : MoviesRepository
+    val genreRepository : GenreRepository
 }
 
 class DefaultAppContainer : AppContainer {
@@ -32,7 +33,7 @@ class DefaultAppContainer : AppContainer {
                 .build()
         )
         .addConverterFactory(movieDBJson.asConverterFactory("application/json".toMediaType()))
-        .baseUrl(Constants.MOVIE_LIST_BASE_URL)
+        .baseUrl(Constants.SERVER_BASE_URL)
         .build()
 
     private val retrofitService: MovieDBApiService by lazy {
@@ -42,4 +43,31 @@ class DefaultAppContainer : AppContainer {
     override val moviesRepository: MoviesRepository by lazy {
         NetworkMoviesRepository(retrofitService)
     }
+
+    override val genreRepository: GenreRepository by lazy {
+        NetworkGenreRepository(retrofitService)
+    }
+
+/*
+    private val retrofitGenre: Retrofit = Retrofit.Builder()
+        .client(
+            okhttp3.OkHttpClient.Builder()
+                .addInterceptor(getLoggerInterceptor())
+                .connectTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(20, java.util.concurrent.TimeUnit.SECONDS)
+                .build()
+        )
+        .addConverterFactory(movieDBJson.asConverterFactory("application/json".toMediaType()))
+        .baseUrl(Constants.GENRE_LIST_BASE_URL)
+        .build()
+
+    private val retrofitGenreService: MovieDBApiService by lazy {
+        retrofitGenre.create(MovieDBApiService::class.java)
+    }
+
+    override val genreRepository: GenreRepository by lazy {
+        NetworkGenreRepository(retrofitGenreService)
+    }
+
+ */
 }

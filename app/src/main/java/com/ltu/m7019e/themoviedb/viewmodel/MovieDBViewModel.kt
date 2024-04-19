@@ -9,7 +9,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.themoviedb.MovieDBApplication
+import com.ltu.m7019e.themoviedb.database.GenreRepository
 import com.ltu.m7019e.themoviedb.database.MoviesRepository
+import com.ltu.m7019e.themoviedb.model.Genre
 import com.ltu.m7019e.themoviedb.model.Movie
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -27,8 +29,15 @@ sealed interface SelectedMovieUiState {
     object Error : SelectedMovieUiState
 }
 
+sealed interface GenreListUiState{
+    data class Success(val genreList: List<Genre>) : GenreListUiState
+    object Loading : GenreListUiState
+    object Error : GenreListUiState
+}
+
 class MovieDBViewModel(
-    private val moviesRepository: MoviesRepository
+    private val moviesRepository: MoviesRepository,
+    private val genreRepository: GenreRepository
 ): ViewModel() {
     var movieListUiState: MovieListUiState by mutableStateOf(MovieListUiState.Loading)
         private set
@@ -36,8 +45,25 @@ class MovieDBViewModel(
     var selectedMovieUiState: SelectedMovieUiState by mutableStateOf(SelectedMovieUiState.Loading)
         private set
 
+    var genreListUiState: GenreListUiState by mutableStateOf(GenreListUiState.Loading)
+        private set
+
     init {
         getPopularMovies()
+        getGenres()
+    }
+
+    fun getGenres() {
+        viewModelScope.launch {
+            genreListUiState = GenreListUiState.Loading
+            genreListUiState = try {
+                GenreListUiState.Success(genreRepository.getGenres().genres)
+            }catch (e: IOException) {
+                GenreListUiState.Error
+            }catch (e: HttpException) {
+                GenreListUiState.Error
+            }
+        }
     }
 
     fun getPopularMovies() {
@@ -84,7 +110,11 @@ class MovieDBViewModel(
             initializer {
                 val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MovieDBApplication)
                 val moviesRepository = application.container.moviesRepository
-                MovieDBViewModel(moviesRepository = moviesRepository)
+                val genreRepository = application.container.genreRepository
+                MovieDBViewModel(
+                    moviesRepository = moviesRepository,
+                    genreRepository = genreRepository
+                )
             }
         }
     }
