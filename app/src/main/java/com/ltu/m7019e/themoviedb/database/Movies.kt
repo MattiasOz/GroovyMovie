@@ -2,6 +2,7 @@ package com.ltu.m7019e.themoviedb.database
 
 import com.ltu.m7019e.themoviedb.model.Movie
 
+/*
 class Movies {
     fun getMovies(): List<Movie> {
         return listOf<Movie>(
@@ -53,3 +54,5 @@ class Movies {
         )
     }
 }
+
+ */

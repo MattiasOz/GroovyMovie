@@ -26,20 +26,43 @@ import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.model.Movie
 import com.ltu.m7019e.themoviedb.ui.theme.TheMovieDBTheme
 import com.ltu.m7019e.themoviedb.utils.Constants
+import com.ltu.m7019e.themoviedb.viewmodel.MovieListUiState
 
 @Composable
 fun MovieListScreen(
-    movieList: List<Movie>,
+    movieListUiState: MovieListUiState,
     onMovieListItemClicked: (Movie) -> Unit,
     modifier: Modifier = Modifier
 ){
     LazyColumn(modifier = modifier) {
-        items(movieList){ movie ->
-            MovieListItemCard(
-                movie = movie,
-                onMovieListItemClicked = onMovieListItemClicked,
-                modifier = Modifier.padding(8.dp)//.background(Color(0xffffffff))
-            )
+        when(movieListUiState) {
+            is MovieListUiState.Success -> {
+            items(movieListUiState.movieList) {movie ->
+                MovieListItemCard(
+                    movie = movie,
+                    onMovieListItemClicked = onMovieListItemClicked,
+                    modifier = Modifier.padding(8.dp)//.background(Color(0xffffffff))
+                )
+            }
+            }
+            is MovieListUiState.Loading -> {
+                item {
+                    Text(
+                        text = "Loading",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
+            is MovieListUiState.Error -> {
+                item {
+                    Text(
+                        text = "Error",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -107,12 +130,14 @@ fun MovieListItemCard(
 
 @Composable
 fun Genres(movie: Movie, modifier: Modifier = Modifier) {
+    /*
     var str = ""
     for (g in movie.genres) {
-        str = str + g + if (g != movie.genres.last())", " else " " // make last not have comma
+        str = str + g + if (g != movie.genres.last())", " else " " // make last not have comma TODO: fix this to not IDs
     }
+     */
     Text(
-        text = str,
+        text = "fix genre",
         style = MaterialTheme.typography.bodySmall,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis
