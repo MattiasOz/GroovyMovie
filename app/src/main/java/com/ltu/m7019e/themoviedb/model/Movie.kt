@@ -20,7 +20,7 @@ data class Movie(
     @SerialName(value = "release_date")
     var releaseDate: String,
 
-    @SerialName(value = "genres_ids")
+    @SerialName(value = "genre_ids")
     var genreIDs: List<Int>,
 
     @SerialName(value = "overview")
