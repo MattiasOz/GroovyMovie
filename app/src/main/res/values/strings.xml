@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TheMovieDB</string>
+    <string name="app_name">Groovy Movie</string>
     <string name="movie_details">Movie Details</string>
     <string name="about_page">About Page</string>
     <string name="back_button">Back</string>
@@ -10,4 +10,7 @@
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="saved_movies">Saved Movies</string>
+    <string name="favorite">Favorite:</string>
+    <string name="loading">Loading...</string>
+    <string name="error">Error :(</string>
 </resources>

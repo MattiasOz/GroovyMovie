@@ -16,12 +16,16 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.ltu.m7019e.themoviedb.R
 import com.ltu.m7019e.themoviedb.utils.Constants
 import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
 import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel
@@ -93,11 +97,15 @@ fun MovieDetailScreen(
                     Spacer(
                         modifier = Modifier.size(8.dp)
                     )
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "Favorite",
-                            style = MaterialTheme.typography.bodyLarge
+                            text = stringResource(R.string.favorite),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontStyle = FontStyle.Italic
                         )
+                        Spacer(modifier = Modifier.size(8.dp))
                         Switch(
                             checked = selectedMovieUiState.isFavorite,
                             onCheckedChange = {
@@ -115,13 +123,13 @@ fun MovieDetailScreen(
         }
         is SelectedMovieUiState.Loading -> {
             Text(
-                text = "Loading...",
+                text = stringResource(R.string.loading),
                 style = MaterialTheme.typography.bodySmall
             )
         }
         is SelectedMovieUiState.Error -> {
             Text(
-                text = "Error :(",
+                text = stringResource(R.string.error),
                 style = MaterialTheme.typography.bodySmall
             )
         }
