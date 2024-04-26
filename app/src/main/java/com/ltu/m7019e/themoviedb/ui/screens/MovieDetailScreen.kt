@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,16 +24,17 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ltu.m7019e.themoviedb.utils.Constants
 import com.ltu.m7019e.themoviedb.utils.getGenresFromIDs
+import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel
 import com.ltu.m7019e.themoviedb.viewmodel.SelectedMovieUiState
 
 
 @Composable
 fun MovieDetailScreen(
-    selectedMovieUiState: SelectedMovieUiState,
+    movieDBViewModel: MovieDBViewModel,
     genreMap: Map<Long, String>,
     modifier: Modifier = Modifier
 ){
-
+    val selectedMovieUiState = movieDBViewModel.selectedMovieUiState
     when (selectedMovieUiState) {
         is SelectedMovieUiState.Success -> {
             val ctx = LocalContext.current
@@ -91,13 +93,38 @@ fun MovieDetailScreen(
                     Spacer(
                         modifier = Modifier.size(8.dp)
                     )
+                    Row {
+                        Text(
+                            text = "Favorite",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Switch(
+                            checked = selectedMovieUiState.isFavorite,
+                            onCheckedChange = {
+                                if (it) {
+                                    movieDBViewModel.saveMovie(selectedMovieUiState.movie)
+                                } else {
+                                    movieDBViewModel.deleteMovie(selectedMovieUiState.movie)
+                                }
+                            }
+                        )
+                    }
                 }
-
             }
 
         }
-        is SelectedMovieUiState.Loading -> TODO()
-        is SelectedMovieUiState.Error -> TODO()
+        is SelectedMovieUiState.Loading -> {
+            Text(
+                text = "Loading...",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        is SelectedMovieUiState.Error -> {
+            Text(
+                text = "Error :(",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 
 }

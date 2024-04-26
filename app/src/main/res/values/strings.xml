@@ -7,4 +7,7 @@
     <string name="mattias_name">Mattias Öz</string>
     <string name="simon_name">Simon Engström</string>
     <string name="github_repo">https://github.com/MattiasOz/GroovyMovie</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="saved_movies">Saved Movies</string>
 </resources>
