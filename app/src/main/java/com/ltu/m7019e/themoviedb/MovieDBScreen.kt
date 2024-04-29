@@ -16,6 +16,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -136,6 +138,7 @@ fun MovieDBAppBar(
 
 @Composable
 fun TheMovieDBApp(
+    windowSize: WindowWidthSizeClass,
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
@@ -175,6 +178,7 @@ fun TheMovieDBApp(
                         movieDBViewModel.setSelectedMovie(movie)
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
+                    windowSize = windowSize,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(8.dp)
