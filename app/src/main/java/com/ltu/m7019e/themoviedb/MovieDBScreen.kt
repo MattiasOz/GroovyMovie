@@ -188,6 +188,7 @@ fun TheMovieDBApp(
                     MovieDetailScreen(
                         movieDBViewModel = movieDBViewModel,
                         genreMap = genreMap,
+                        windowSize = windowSize,
                         modifier = Modifier
                     )
             }
