@@ -9,7 +9,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.themoviedb.MovieDBApplication
+import com.ltu.m7019e.themoviedb.database.CachedMovieRepository
+import com.ltu.m7019e.themoviedb.database.CachedMoviesRepository
 import com.ltu.m7019e.themoviedb.database.GenreRepository
+import com.ltu.m7019e.themoviedb.database.ListCategory
 import com.ltu.m7019e.themoviedb.database.MoviesRepository
 import com.ltu.m7019e.themoviedb.database.SavedMovieRepository
 import com.ltu.m7019e.themoviedb.model.Genre
@@ -39,7 +42,8 @@ sealed interface GenreListUiState{
 class MovieDBViewModel(
     private val moviesRepository: MoviesRepository,
     private val genreRepository: GenreRepository,
-    private val savedMovieRepository: SavedMovieRepository
+    private val savedMovieRepository: SavedMovieRepository,
+    private val cachedMovieRepository: CachedMovieRepository
 ): ViewModel() {
     var movieListUiState: MovieListUiState by mutableStateOf(MovieListUiState.Loading)
         private set
@@ -75,11 +79,15 @@ class MovieDBViewModel(
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
             movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getPopularMovies().results)
-            }catch (e: IOException) {
-                MovieListUiState.Error
-            }catch (e: HttpException) {
-                MovieListUiState.Error
+                val movieList = moviesRepository.getPopularMovies().results
+                cachedMovieRepository.cachePopular(movieList)
+                MovieListUiState.Success(movieList)
+            }catch (e: Exception) {
+                try {
+                    MovieListUiState.Success(cachedMovieRepository.getPopular())
+                }catch (e: Exception) {
+                    MovieListUiState.Error
+                }
             }
         }
     }
@@ -88,11 +96,15 @@ class MovieDBViewModel(
         viewModelScope.launch {
             movieListUiState = MovieListUiState.Loading
             movieListUiState = try {
-                MovieListUiState.Success(moviesRepository.getTopRatedMovies().results)
-            }catch (e: IOException) {
-                MovieListUiState.Error
-            }catch (e: HttpException) {
-                MovieListUiState.Error
+                val movieList = moviesRepository.getTopRatedMovies().results
+                cachedMovieRepository.cacheTopRated(movieList)
+                MovieListUiState.Success(movieList)
+            }catch (e: Exception) {
+                try {
+                    MovieListUiState.Success(cachedMovieRepository.getTopRated())
+                }catch (e: Exception) {
+                    MovieListUiState.Error
+                }
             }
         }
     }
@@ -144,10 +156,12 @@ class MovieDBViewModel(
                 val moviesRepository = application.container.moviesRepository
                 val genreRepository = application.container.genreRepository
                 val savedMovieRepository = application.container.savedMovieRepository
+                val cachedMovieRepository = application.container.cachedMovieRepository
                 MovieDBViewModel(
                     moviesRepository = moviesRepository,
                     genreRepository = genreRepository,
-                    savedMovieRepository = savedMovieRepository
+                    savedMovieRepository = savedMovieRepository,
+                    cachedMovieRepository = cachedMovieRepository,
                 )
             }
         }

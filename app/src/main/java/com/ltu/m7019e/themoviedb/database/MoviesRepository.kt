@@ -1,5 +1,6 @@
 package com.ltu.m7019e.themoviedb.database
 
+import android.util.Log
 import com.ltu.m7019e.themoviedb.model.Movie
 import com.ltu.m7019e.themoviedb.model.MovieResponse
 import com.ltu.m7019e.themoviedb.network.MovieDBApiService
@@ -48,4 +49,49 @@ class SavedMoviesRepository(private val movieDao: MovieDao) : SavedMovieReposito
         movieDao.deleteFavoriteMovie(movie.id)
     }
 
+}
+
+
+interface CachedMovieRepository {
+    suspend fun getPopular(): List<Movie>
+    suspend fun getTopRated(): List<Movie>
+    suspend fun cachePopular(movies: List<Movie>)
+    suspend fun cacheTopRated(movies: List<Movie>)
+}
+
+class CachedMoviesRepository(private val movieDao: MovieDao) : CachedMovieRepository {
+
+    override suspend fun getPopular(): List<Movie> {
+        val res = movieDao.getPopular()
+        if(res.isEmpty()) throw Exception("No cached popular movies")
+        else return res
+    }
+
+    override suspend fun getTopRated(): List<Movie> {
+        val res = movieDao.getTopRated()
+        if(res.isEmpty()) throw Exception("No cached top rated movies")
+        else return res
+    }
+
+    override suspend fun cachePopular(movies: List<Movie>) {
+        if(movies.isEmpty()) throw Exception("Empty movie list.")
+        movieDao.clearTopRated()
+        movieDao.cachePopular(movies.map { CachedPopular(it) })
+    }
+
+    override suspend fun cacheTopRated(movies: List<Movie>) {
+        if(movies.isEmpty()) throw Exception("Empty movie list.")
+        movieDao.clearPopular()
+        movieDao.cacheTopRated(movies.map { CachedTopRated(it) })
+    }
+
+    /*
+    override suspend fun getPo(): List<Movie> {
+        return movieDao.getCache()
+    }
+    override suspend fun cacheMovies(movies: List<Movie>, category: ListCategory) {
+        Log.d("MoviesRepository", "Got to cache movies fun")
+        movieDao.clearCache()
+        movieDao.cache(movies.map { CachedMovie(it) })
+    }*/
 }

@@ -32,4 +32,5 @@ data class Movie(
 
     @SerialName(value = "overview")
     var overview: String,
+
 )

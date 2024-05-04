@@ -13,6 +13,7 @@ interface AppContainer {
     val moviesRepository : MoviesRepository
     val genreRepository : GenreRepository
     val savedMovieRepository : SavedMovieRepository
+    val cachedMovieRepository: CachedMovieRepository
 }
 
 class DefaultAppContainer(
@@ -55,4 +56,9 @@ class DefaultAppContainer(
     override val savedMovieRepository: SavedMovieRepository by lazy {
         SavedMoviesRepository(MovieDatabase.getDatabase(context).movieDao())
     }
+
+    override val cachedMovieRepository: CachedMovieRepository by lazy {
+        CachedMoviesRepository(MovieDatabase.getDatabase(context).movieDao())
+    }
+
 }
