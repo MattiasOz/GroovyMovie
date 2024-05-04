@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ltu.m7019e.themoviedb.database.PageType
-import com.ltu.m7019e.themoviedb.utils.Constants
 import com.ltu.m7019e.themoviedb.utils.Constants.RELOAD_PAGE_TAG
 
 import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel

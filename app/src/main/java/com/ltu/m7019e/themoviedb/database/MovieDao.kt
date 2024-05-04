@@ -26,8 +26,8 @@ interface MovieDao {
     suspend fun cachePopular(movies: List<CachedPopular>)
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun cacheTopRated(movies: List<CachedTopRated>)
-    @Query("SELECT * FROM cached_popular")
-    suspend fun getPopular(): List<Movie>
-    @Query("SELECT * FROM cached_top_rated")
-    suspend fun getTopRated(): List<Movie>
+    @Query("SELECT * FROM cached_popular ORDER BY listNr ASC")
+    suspend fun getPopular(): List<CachedPopular>
+    @Query("SELECT * FROM cached_top_rated ORDER BY listNr ASC")
+    suspend fun getTopRated(): List<CachedTopRated>
 }

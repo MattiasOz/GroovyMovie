@@ -10,9 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.ltu.m7019e.themoviedb.MovieDBApplication
 import com.ltu.m7019e.themoviedb.database.CachedMovieRepository
-import com.ltu.m7019e.themoviedb.database.CachedMoviesRepository
 import com.ltu.m7019e.themoviedb.database.GenreRepository
-import com.ltu.m7019e.themoviedb.database.ListCategory
 import com.ltu.m7019e.themoviedb.database.MoviesRepository
 import com.ltu.m7019e.themoviedb.database.SavedMovieRepository
 import com.ltu.m7019e.themoviedb.model.Genre
@@ -155,6 +153,10 @@ class MovieDBViewModel(
 
     fun scheduleTopRatedReload() {
         moviesRepository.scheduleTopRatedReload()
+    }
+
+    fun cancelScheduledReload() {
+        moviesRepository.cancelWork()
     }
 
     companion object {

@@ -7,11 +7,10 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import android.util.Log
 import com.ltu.m7019e.themoviedb.model.Movie
 import com.ltu.m7019e.themoviedb.model.MovieResponse
 import com.ltu.m7019e.themoviedb.network.MovieDBApiService
-import com.ltu.m7019e.themoviedb.utils.Constants
+import com.ltu.m7019e.themoviedb.utils.Constants.RECONNECT_RELOAD_TAG
 import com.ltu.m7019e.themoviedb.utils.Constants.RELOAD_PAGE_TAG
 import com.ltu.m7019e.themoviedb.workers.ReconnectWorker
 
@@ -23,6 +22,8 @@ interface MoviesRepository {
     fun schedulePopularReload()
 
     fun scheduleTopRatedReload()
+
+    fun cancelWork()
 }
 
 enum class PageType {
@@ -57,7 +58,7 @@ class NetworkMoviesRepository(
             .setConstraints(constraints)
             .build()
 
-        workManager.enqueueUniqueWork(Constants.RECONNECT_RELOAD_TAG, ExistingWorkPolicy.REPLACE, workRequest)
+        workManager.enqueueUniqueWork(RECONNECT_RELOAD_TAG, ExistingWorkPolicy.REPLACE, workRequest)
     }
 
     override fun scheduleTopRatedReload() {
@@ -74,7 +75,11 @@ class NetworkMoviesRepository(
             .setConstraints(constraints)
             .build()
 
-        workManager.enqueueUniqueWork(Constants.RECONNECT_RELOAD_TAG, ExistingWorkPolicy.REPLACE, workRequest)
+        workManager.enqueueUniqueWork(RECONNECT_RELOAD_TAG, ExistingWorkPolicy.REPLACE, workRequest)
+    }
+
+    override fun cancelWork() {
+        workManager.cancelUniqueWork(RECONNECT_RELOAD_TAG)
     }
 
 }
@@ -118,25 +123,27 @@ class CachedMoviesRepository(private val movieDao: MovieDao) : CachedMovieReposi
     override suspend fun getPopular(): List<Movie> {
         val res = movieDao.getPopular()
         if(res.isEmpty()) throw Exception("No cached popular movies")
-        else return res
+        else return res.map { it.movie }
     }
 
     override suspend fun getTopRated(): List<Movie> {
         val res = movieDao.getTopRated()
         if(res.isEmpty()) throw Exception("No cached top rated movies")
-        else return res
+        else return res.map { it.movie }
     }
 
     override suspend fun cachePopular(movies: List<Movie>) {
         if(movies.isEmpty()) throw Exception("Empty movie list.")
         movieDao.clearTopRated()
-        movieDao.cachePopular(movies.map { CachedPopular(it) })
+        var listNr = 0
+        movieDao.cachePopular(movies.map { CachedPopular(it, listNr++) })
     }
 
     override suspend fun cacheTopRated(movies: List<Movie>) {
         if(movies.isEmpty()) throw Exception("Empty movie list.")
         movieDao.clearPopular()
-        movieDao.cacheTopRated(movies.map { CachedTopRated(it) })
+        var listNr = 0
+        movieDao.cacheTopRated(movies.map { CachedTopRated(it, listNr++) })
     }
 
     /*

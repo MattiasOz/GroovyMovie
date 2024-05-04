@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ltu.m7019e.themoviedb.model.Movie
 
-@Database(entities = [Movie::class, CachedPopular::class, CachedTopRated::class], version = 4, exportSchema = false)
+@Database(entities = [Movie::class, CachedPopular::class, CachedTopRated::class], version = 5, exportSchema = false)
 @TypeConverters(GenreConverters::class)
 abstract class MovieDatabase : RoomDatabase() {
 

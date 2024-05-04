@@ -36,6 +36,7 @@ fun MovieListScreen(
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
     scheduleReload: () -> Unit,
+    cancelScheduleReload: () -> Unit,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ){
@@ -46,6 +47,7 @@ fun MovieListScreen(
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
                 scheduleReload = scheduleReload,
+                cancelScheduleReload = cancelScheduleReload,
                 modifier = modifier
             )
         }
@@ -55,6 +57,7 @@ fun MovieListScreen(
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
                 scheduleReload = scheduleReload,
+                cancelScheduleReload = cancelScheduleReload,
                 modifier = modifier
             )
         }
@@ -64,6 +67,7 @@ fun MovieListScreen(
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
                 scheduleReload = scheduleReload,
+                cancelScheduleReload = cancelScheduleReload,
                 modifier = modifier.fillMaxHeight()
             )
         }
@@ -77,11 +81,13 @@ fun CompactScreen(
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
     scheduleReload: () -> Unit,
+    cancelScheduleReload: () -> Unit,
     modifier: Modifier = Modifier
 ){
     LazyVerticalGrid(columns = GridCells.Adaptive(300.dp), modifier = modifier) {
         when(movieListUiState) {
             is MovieListUiState.Success -> {
+                cancelScheduleReload()
                 items(movieListUiState.movieList) {movie ->
                     val genreList = getGenresFromIDs(movie.genreIDs, genreMap)
                     MovieListItemCard(
@@ -123,11 +129,13 @@ fun ExpandedScreen(
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
     scheduleReload: () -> Unit,
+    cancelScheduleReload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(rows = GridCells.Adaptive(200.dp), modifier = modifier) {
         when(movieListUiState) {
             is MovieListUiState.Success -> {
+                cancelScheduleReload()
                 items(movieListUiState.movieList) {movie ->
                     val genreList = getGenresFromIDs(movie.genreIDs, genreMap)
                     MovieListItemVerticalCard(

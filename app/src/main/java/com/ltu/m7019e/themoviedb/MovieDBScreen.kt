@@ -181,6 +181,7 @@ fun TheMovieDBApp(
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
                     scheduleReload = scheduleReload?: movieDBViewModel::schedulePopularReload,
+                    cancelScheduleReload = movieDBViewModel::cancelScheduledReload,
                     windowSize = windowSize,
                     modifier = Modifier
                         .fillMaxSize()
