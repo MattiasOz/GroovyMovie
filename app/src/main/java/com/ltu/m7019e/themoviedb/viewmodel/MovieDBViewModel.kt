@@ -137,6 +137,10 @@ class MovieDBViewModel(
         }
     }
 
+    fun schedulePopularReload() {
+        moviesRepository.schedulePopularReload()
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
