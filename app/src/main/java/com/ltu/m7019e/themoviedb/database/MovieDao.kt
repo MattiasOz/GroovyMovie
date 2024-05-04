@@ -17,4 +17,17 @@ interface MovieDao {
     suspend fun getMovie(id: Long): Movie
     @Query("DELETE FROM favorite_movies WHERE id = :id")
     suspend fun deleteFavoriteMovie(id: Long)
+
+    @Query("DELETE FROM cached_popular")
+    suspend fun clearPopular()
+    @Query("DELETE FROM cached_top_rated")
+    suspend fun clearTopRated()
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun cachePopular(movies: List<CachedPopular>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun cacheTopRated(movies: List<CachedTopRated>)
+    @Query("SELECT * FROM cached_popular")
+    suspend fun getPopular(): List<Movie>
+    @Query("SELECT * FROM cached_top_rated")
+    suspend fun getTopRated(): List<Movie>
 }
