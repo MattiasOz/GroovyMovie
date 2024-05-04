@@ -63,7 +63,7 @@ fun AboutPageScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .weight(4f),
+                .weight(2f),
         ) {
             ContributorCard(
                 painterResource = matzuu,
@@ -143,21 +143,21 @@ fun ContributorCard(
         val clip = remember(polygon) {
             RoundedPolygonShape(polygon = polygon)
         }
-        Box (
+        Box(
             modifier = Modifier
-                .clip(clip)
+                .weight(1f)
         ) {
             Image(
                 painter = painterResource,
                 contentDescription = contentDesc,
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .clip(clip)
             )
         }
         Text(
             text = name,
             style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center
+            modifier = Modifier.weight(1f)
         )
     }
 }

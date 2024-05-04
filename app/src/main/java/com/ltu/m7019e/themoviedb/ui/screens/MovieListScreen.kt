@@ -10,13 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +35,7 @@ fun MovieListScreen(
     movieListUiState: MovieListUiState,
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
+    scheduleReload: () -> Unit,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ){
@@ -47,6 +45,7 @@ fun MovieListScreen(
                 movieListUiState = movieListUiState,
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
+                scheduleReload = scheduleReload,
                 modifier = modifier
             )
         }
@@ -55,6 +54,7 @@ fun MovieListScreen(
                 movieListUiState = movieListUiState,
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
+                scheduleReload = scheduleReload,
                 modifier = modifier
             )
         }
@@ -63,6 +63,7 @@ fun MovieListScreen(
                 movieListUiState = movieListUiState,
                 genreMap = genreMap,
                 onMovieListItemClicked = onMovieListItemClicked,
+                scheduleReload = scheduleReload,
                 modifier = modifier.fillMaxHeight()
             )
         }
@@ -75,6 +76,7 @@ fun CompactScreen(
     movieListUiState: MovieListUiState,
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
+    scheduleReload: () -> Unit,
     modifier: Modifier = Modifier
 ){
     LazyVerticalGrid(columns = GridCells.Adaptive(300.dp), modifier = modifier) {
@@ -102,6 +104,7 @@ fun CompactScreen(
                 }
             }
             is MovieListUiState.Error -> {
+                scheduleReload()
                 item {
                     Text(
                         text = "Error",
@@ -119,6 +122,7 @@ fun ExpandedScreen(
     movieListUiState: MovieListUiState,
     genreMap: Map<Long, String>,
     onMovieListItemClicked: (Movie) -> Unit,
+    scheduleReload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(rows = GridCells.Adaptive(200.dp), modifier = modifier) {
@@ -148,6 +152,7 @@ fun ExpandedScreen(
                 }
             }
             is MovieListUiState.Error -> {
+                scheduleReload()
                 item {
                     Text(
                         text = "Error",

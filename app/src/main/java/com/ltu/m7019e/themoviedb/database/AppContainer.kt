@@ -19,13 +19,13 @@ interface AppContainer {
 class DefaultAppContainer(
     private val context: Context
 ) : AppContainer {
-    fun getLoggerInterceptor(): HttpLoggingInterceptor {
+    private fun getLoggerInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
         return logging
     }
 
-    val movieDBJson = Json {
+    private val movieDBJson = Json {
         ignoreUnknownKeys = true
     }
 
@@ -46,7 +46,7 @@ class DefaultAppContainer(
     }
 
     override val moviesRepository: MoviesRepository by lazy {
-        NetworkMoviesRepository(retrofitService)
+        NetworkMoviesRepository(retrofitService, context)
     }
 
     override val genreRepository: GenreRepository by lazy {

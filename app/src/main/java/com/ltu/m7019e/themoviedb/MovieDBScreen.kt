@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +36,7 @@ import com.ltu.m7019e.themoviedb.ui.screens.MovieDetailScreen
 import com.ltu.m7019e.themoviedb.ui.screens.MovieListScreen
 import com.ltu.m7019e.themoviedb.utils.getGenreMap
 import com.ltu.m7019e.themoviedb.viewmodel.MovieDBViewModel
+import com.ltu.m7019e.themoviedb.workers.ReconnectWorker
 
 
 enum class MovieDBScreen(@StringRes val title: Int){
@@ -126,7 +126,7 @@ fun MovieDBAppBar(
             if (canNavigateBack){
                 IconButton(onClick = navigateUp) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back_button)
                     )
                 }
@@ -148,6 +148,7 @@ fun TheMovieDBApp(
         backStackEntry?.destination?.route ?: MovieDBScreen.List.name
     )
     val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
+    ReconnectWorker.setViewModel(movieDBViewModel)
 
     Scaffold(
         topBar = {
@@ -178,6 +179,7 @@ fun TheMovieDBApp(
                         movieDBViewModel.setSelectedMovie(movie)
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
+                    scheduleReload = {movieDBViewModel.schedulePopularReload()},
                     windowSize = windowSize,
                     modifier = Modifier
                         .fillMaxSize()
@@ -185,12 +187,12 @@ fun TheMovieDBApp(
                 )
             }
             composable(route = MovieDBScreen.Detail.name) {
-                    MovieDetailScreen(
-                        movieDBViewModel = movieDBViewModel,
-                        genreMap = genreMap,
-                        windowSize = windowSize,
-                        modifier = Modifier
-                    )
+                MovieDetailScreen(
+                    movieDBViewModel = movieDBViewModel,
+                    genreMap = genreMap,
+                    windowSize = windowSize,
+                    modifier = Modifier
+                )
             }
             composable(route = MovieDBScreen.About.name){
                 AboutPageScreen()
