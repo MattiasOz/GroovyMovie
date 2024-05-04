@@ -9,4 +9,5 @@ object Constants {
     const val API_KEY = SECRETS.API_KEY
 
     const val RECONNECT_RELOAD_TAG = "RECONNECT_RELOAD_TAG"
+    const val RELOAD_PAGE_TAG = "RELOAD_PAGE_TAG"
 }

@@ -2,6 +2,7 @@ package com.ltu.m7019e.themoviedb.database
 
 import android.content.Context
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -10,6 +11,7 @@ import com.ltu.m7019e.themoviedb.model.Movie
 import com.ltu.m7019e.themoviedb.model.MovieResponse
 import com.ltu.m7019e.themoviedb.network.MovieDBApiService
 import com.ltu.m7019e.themoviedb.utils.Constants
+import com.ltu.m7019e.themoviedb.utils.Constants.RELOAD_PAGE_TAG
 import com.ltu.m7019e.themoviedb.workers.ReconnectWorker
 
 interface MoviesRepository {
@@ -18,8 +20,13 @@ interface MoviesRepository {
     suspend fun getTopRatedMovies(): MovieResponse
 
     fun schedulePopularReload()
+
+    fun scheduleTopRatedReload()
 }
 
+enum class PageType {
+    POPULAR, TOP_RATED
+}
 
 class NetworkMoviesRepository(
     private val apiService: MovieDBApiService,
@@ -40,7 +47,29 @@ class NetworkMoviesRepository(
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
+        val data = Data.Builder()
+            .putString(RELOAD_PAGE_TAG, PageType.POPULAR.name)
+            .build()
+
         val workRequest = OneTimeWorkRequestBuilder<ReconnectWorker>()
+            .setInputData(data)
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniqueWork(Constants.RECONNECT_RELOAD_TAG, ExistingWorkPolicy.REPLACE, workRequest)
+    }
+
+    override fun scheduleTopRatedReload() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val data = Data.Builder()
+            .putString(RELOAD_PAGE_TAG, PageType.TOP_RATED.name)
+            .build()
+
+        val workRequest = OneTimeWorkRequestBuilder<ReconnectWorker>()
+            .setInputData(data)
             .setConstraints(constraints)
             .build()
 

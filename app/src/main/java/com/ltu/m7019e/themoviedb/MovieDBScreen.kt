@@ -45,6 +45,8 @@ enum class MovieDBScreen(@StringRes val title: Int){
     About(title = R.string.about_page)
 }
 
+//private var page: PageType = PageType.TOP_RATED
+private var scheduleReload: (() -> Unit)? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,6 +85,7 @@ fun MovieDBAppBar(
                     DropdownMenuItem(
                         text = { Text(text = stringResource(R.string.popular_movies)) },
                         onClick = {
+                            scheduleReload = movieDBViewModel::schedulePopularReload
                             movieDBViewModel.getPopularMovies()
                             menuExpanded = false
                         }
@@ -90,6 +93,7 @@ fun MovieDBAppBar(
                     DropdownMenuItem(
                         text = { Text(text = stringResource(R.string.top_rated_movies)) },
                         onClick = {
+                            scheduleReload = movieDBViewModel::scheduleTopRatedReload
                             movieDBViewModel.getTopRatedMovies()
                             menuExpanded = false
                         }
@@ -102,25 +106,14 @@ fun MovieDBAppBar(
                         }
                     )
                     DropdownMenuItem(
-                            text = { Text(text = "About Us") },
-                    onClick = {
-                        navigateAbout()
-                        menuExpanded = false
-                    }
-                    )
-
-                }
-            }
-            /*
-            if(currentScreen != MovieDBScreen.About) {
-                IconButton(onClick = {navigateAbout()}) {
-                    Icon(
-                        imageVector = Icons.Filled.Info,
-                        contentDescription = stringResource(R.string.about_button)
+                        text = { Text(text = "About Us") },
+                        onClick = {
+                            navigateAbout()
+                            menuExpanded = false
+                        }
                     )
                 }
             }
-             */
         },
         navigationIcon = {
             if (canNavigateBack){
@@ -157,13 +150,21 @@ fun TheMovieDBApp(
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 navigateAbout = { navController.navigate(MovieDBScreen.About.name) },
-                movieDBViewModel = movieDBViewModel
+                movieDBViewModel = movieDBViewModel,
             )
         },
         modifier = modifier
     ) { innerPadding ->
         val genreMap = getGenreMap(movieDBViewModel.genreListUiState)
 
+//        val scheduleReload by when (page) {
+//            PageType.POPULAR -> remember { mutableStateOf(movieDBViewModel::schedulePopularReload) }
+//            PageType.TOP_RATED -> remember { mutableStateOf(movieDBViewModel::scheduleTopRatedReload) }
+//        }
+//        val scheduleReload = when (page) {
+//            PageType.POPULAR -> movieDBViewModel::schedulePopularReload
+//            PageType.TOP_RATED -> movieDBViewModel::scheduleTopRatedReload
+//        }
         NavHost(
             navController = navController,
             startDestination = MovieDBScreen.List.name,
@@ -179,7 +180,7 @@ fun TheMovieDBApp(
                         movieDBViewModel.setSelectedMovie(movie)
                         navController.navigate(MovieDBScreen.Detail.name)
                     },
-                    scheduleReload = {movieDBViewModel.schedulePopularReload()},
+                    scheduleReload = scheduleReload?: movieDBViewModel::schedulePopularReload,
                     windowSize = windowSize,
                     modifier = Modifier
                         .fillMaxSize()
